@@ -1,6 +1,12 @@
 CC=			gcc
 #CC=			clang --analyze
 CFLAGS=		-g -Wall -Wno-unused-function -O2
+ifeq (ppc64le,$(shell uname -m))
+ifeq (,$(findstring at,$(shell dirname `which gcc`)))
+  $(error Needs advance tool chain >= 12.0-1 on ppc64le platform )
+endif
+CFLAGS += -maltivec -mcpu=power8 -mtune=power9 -DNO_WARN_X86_INTRINSICS -Wno-narrowing
+endif
 WRAP_MALLOC=-DUSE_MALLOC_WRAPPERS
 AR=			ar
 DFLAGS=		-DHAVE_PTHREAD $(WRAP_MALLOC)
